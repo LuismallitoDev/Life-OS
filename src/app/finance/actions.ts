@@ -30,3 +30,16 @@ export async function updateSavingsGoalAmount(formData: FormData) {
 
   revalidatePath("/finance");
 }
+
+export async function setRevenueGoal(formData: FormData) {
+  const target = Number(formData.get("monthly_target"));
+  if (!Number.isFinite(target) || target < 0) return;
+
+  const { error } = await getSupabase()
+    .from("revenue_goal")
+    .upsert({ id: "default", monthly_target: target, updated_at: new Date().toISOString() });
+  if (error) throw error;
+
+  revalidatePath("/finance");
+  revalidatePath("/");
+}

@@ -39,9 +39,6 @@
   --ease: cubic-bezier(0.22, 1, 0.36, 1);
   --transition-fast: 140ms var(--ease);
   --transition-base: 220ms var(--ease);
-
-  /* layout */
-  --sidebar-w: 248px;
 }
 
 @theme inline {

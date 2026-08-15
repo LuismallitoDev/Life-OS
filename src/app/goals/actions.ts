@@ -35,6 +35,7 @@ export async function toggleHabitLog(formData: FormData) {
   }
 
   revalidatePath("/goals");
+  revalidatePath("/");
 }
 
 export async function addLongTermGoal(formData: FormData) {

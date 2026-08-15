@@ -11,17 +11,26 @@ import {
 } from "@/lib/notion";
 import {
   getSavingsGoals,
+  getRevenueGoal,
   isSupabaseConfigured,
   type SavingsGoal,
+  type RevenueGoal,
 } from "@/lib/supabase";
 import { MonthlyChart, type MonthlyPoint } from "./monthly-chart";
-import { addSavingsGoal, updateSavingsGoalAmount } from "./actions";
+import { addSavingsGoal, updateSavingsGoalAmount, setRevenueGoal } from "./actions";
 
 function monthKey(iso: string | null) {
   if (!iso) return "Unknown";
   const d = new Date(iso);
   if (Number.isNaN(d.getTime())) return "Unknown";
   return d.toLocaleDateString(undefined, { year: "numeric", month: "short" });
+}
+
+function isThisMonth(iso: string | null) {
+  if (!iso) return false;
+  const d = new Date(iso);
+  const now = new Date();
+  return d.getFullYear() === now.getFullYear() && d.getMonth() === now.getMonth();
 }
 
 function sumByMonth(income: Transaction[], expenses: Transaction[]): MonthlyPoint[] {
@@ -67,10 +76,11 @@ export default async function FinancePage() {
   }
 
   let savingsGoals: SavingsGoal[] = [];
+  let revenueGoal: RevenueGoal | null = null;
   let supabaseError: string | null = null;
   if (supabaseReady) {
     try {
-      savingsGoals = await getSavingsGoals();
+      [savingsGoals, revenueGoal] = await Promise.all([getSavingsGoals(), getRevenueGoal()]);
     } catch (e) {
       supabaseError = e instanceof Error ? e.message : "Failed to load Supabase data.";
     }
@@ -81,6 +91,7 @@ export default async function FinancePage() {
   const startingBalance = balances.reduce((s, b) => s + (b.startingBalance ?? 0), 0);
   const netBalance = startingBalance + totalIncome - totalExpense;
   const monthly = sumByMonth(income, expenses);
+  const mrr = income.filter((t) => isThisMonth(t.date)).reduce((s, t) => s + (t.amount ?? 0), 0);
 
   return (
     <div className="space-y-6">
@@ -106,6 +117,59 @@ export default async function FinancePage() {
           <p className="num text-[26px] font-medium text-[var(--text)]">{formatMoney(netBalance)}</p>
         </Card>
       </div>
+
+      <Card title="Revenue Goal">
+        <div className="flex flex-wrap items-end justify-between gap-4 mb-3">
+          <div>
+            <p className="text-[11.5px] uppercase tracking-wide" style={{ color: "var(--text-faint)" }}>
+              MRR this month
+            </p>
+            <p className="num text-[26px] font-medium mt-1" style={{ color: "var(--text)" }}>
+              {formatMoney(mrr)}
+              {revenueGoal && revenueGoal.monthly_target > 0 && (
+                <span className="text-sm ml-1.5" style={{ color: "var(--text-faint)" }}>
+                  / {formatMoney(revenueGoal.monthly_target)}
+                </span>
+              )}
+            </p>
+          </div>
+          {revenueGoal && revenueGoal.monthly_target > 0 && (
+            <span className="num text-sm" style={{ color: "var(--accent)" }}>
+              {Math.round((mrr / revenueGoal.monthly_target) * 100)}%
+            </span>
+          )}
+        </div>
+        {revenueGoal && revenueGoal.monthly_target > 0 ? (
+          <ProgressBar value={mrr} max={revenueGoal.monthly_target} />
+        ) : (
+          <p className="text-sm" style={{ color: "var(--text-faint)" }}>
+            No monthly goal set yet — add one below.
+          </p>
+        )}
+        {supabaseReady && (
+          <form action={setRevenueGoal} className="mt-3 flex items-end gap-2">
+            <div>
+              <label className="block text-xs" style={{ color: "var(--text-faint)" }}>
+                Monthly target
+              </label>
+              <input
+                type="number"
+                step="0.01"
+                min={0}
+                name="monthly_target"
+                defaultValue={revenueGoal?.monthly_target ?? ""}
+                className="w-32 rounded border border-[var(--border)] bg-[var(--bg-elevated)] px-2 py-1 text-sm text-[var(--text)]"
+              />
+            </div>
+            <button
+              type="submit"
+              className="rounded bg-[var(--surface-active)] px-3 py-1 text-xs text-[var(--text)] hover:bg-[var(--border-strong)]"
+            >
+              Save
+            </button>
+          </form>
+        )}
+      </Card>
 
       <Card title="Income vs Expense by Month">
         {monthly.length === 0 ? (

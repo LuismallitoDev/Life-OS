@@ -33,6 +33,14 @@ create table if not exists habit_logs (
   unique (habit_id, log_date)
 );
 
+-- Single-row table: your monthly MRR target, shown as a progress bar on
+-- Overview. Always read/written at id='default' so there's only ever one row.
+create table if not exists revenue_goal (
+  id text primary key default 'default',
+  monthly_target numeric not null default 0,
+  updated_at timestamptz not null default now()
+);
+
 -- This app is for single-user local use only, so RLS is left disabled here.
 -- If you ever expose this beyond localhost, enable RLS and add policies
 -- scoped to an authenticated user before doing so.

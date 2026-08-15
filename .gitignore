@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# sibling Remotion project (its own dependencies/build output)
+remotion-studio/node_modules
+remotion-studio/out

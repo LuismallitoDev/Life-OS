@@ -1,6 +1,7 @@
 import { format } from "date-fns";
-import { Card, Badge, ProgressRing } from "@/components/ui";
+import { Card, Badge } from "@/components/ui";
 import { SetupNotice } from "@/components/setup-notice";
+import { HealthRings } from "./health-rings";
 import {
   getMealsForDate,
   getExercisesForDate,
@@ -8,13 +9,6 @@ import {
   type Meal,
   type Exercise,
 } from "@/lib/notion";
-
-// Adjust these to your actual daily targets.
-const TARGETS = {
-  calories: 2200,
-  protein: 150,
-  water: 2500, // ml
-};
 
 export default async function HealthPage() {
   const notionReady = isNotionConfigured();
@@ -57,26 +51,7 @@ export default async function HealthPage() {
       {notionError && <SetupNotice>{notionError}</SetupNotice>}
 
       <Card title="Today's Progress">
-        <div className="flex flex-wrap gap-8 justify-around py-2">
-          <ProgressRing
-            value={totals.calories}
-            max={TARGETS.calories}
-            label="Calories"
-            color="#f99c00"
-          />
-          <ProgressRing
-            value={totals.protein}
-            max={TARGETS.protein}
-            label="Protein (g)"
-            color="#00d294"
-          />
-          <ProgressRing
-            value={totals.water}
-            max={TARGETS.water}
-            label="Water (ml)"
-            color="#3080ff"
-          />
-        </div>
+        <HealthRings totals={totals} />
       </Card>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">

@@ -64,19 +64,37 @@ configuration needed once the integration has access.
    SUPABASE_ANON_KEY=eyJ...
    ```
 
+### 4. Remotion Studio (optional — for Content Studio's video editor)
+
+A blank Remotion project lives in `remotion-studio/` at the repo root — a
+separate app with its own `package.json`, not part of the Next.js build.
+Content Studio embeds it in an iframe pointed at `http://localhost:3001`.
+
+1. `cd remotion-studio && npm i` (once).
+2. `npm run dev` — starts Remotion Studio on port 3001 (pinned in
+   `remotion-studio/remotion.config.ts` so it never collides with life-os's
+   own dev server on port 3000).
+3. Open Content Studio in life-os — the embed auto-detects whether Studio is
+   running and shows a "start it" notice with a retry button if it isn't.
+
+Both dev servers need to be running at once for the embed to work; life-os
+itself works fine with `remotion-studio`'s server stopped, it just shows that
+notice instead of the editor.
+
 ## Running
 
 ```bash
 npm run dev
 ```
 
-Open http://localhost:3000. Side menu: **Overview**, **Work & Projects**,
-**Finance**, **Personal Goals**, **Health & Fitness**.
+Open http://localhost:3000. Sidebar: **Overview**, **Work & Projects**,
+**Finance**, **Personal Goals**, **Health & Fitness**, **Content Studio**,
+**Tools**, **Settings** — collapsible via the toggle at the bottom.
 
 ## Notes
 
-- Health & Fitness targets (calories/protein/water) are hardcoded constants
-  at the top of `src/app/health/page.tsx` — edit them to match your goals.
+- Health & Fitness targets (calories/protein/water) are set in Work &amp;
+  Projects → Settings → Health Targets.
 - `Meal Tracking` and `Exercises` are queried by today's date; there's no
   historical view yet.
 - Since this only runs on localhost for a single user, there's no auth layer

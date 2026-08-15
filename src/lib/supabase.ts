@@ -55,6 +55,12 @@ export type HabitLog = {
   log_date: string;
 };
 
+export type RevenueGoal = {
+  id: string;
+  monthly_target: number;
+  updated_at: string;
+};
+
 // --- Queries ------------------------------------------------------------------
 
 export async function getSavingsGoals(): Promise<SavingsGoal[]> {
@@ -91,4 +97,14 @@ export async function getHabitLogs(sinceIsoDate: string): Promise<HabitLog[]> {
     .gte("log_date", sinceIsoDate);
   if (error) throw error;
   return data ?? [];
+}
+
+export async function getRevenueGoal(): Promise<RevenueGoal | null> {
+  const { data, error } = await getSupabase()
+    .from("revenue_goal")
+    .select("*")
+    .eq("id", "default")
+    .maybeSingle();
+  if (error) throw error;
+  return data;
 }

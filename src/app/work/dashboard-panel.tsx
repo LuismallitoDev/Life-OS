@@ -48,6 +48,7 @@ export function DashboardPanel({
   moneyThisMonth: number;
   onOpenAiCoach: () => void;
 }) {
+  const [greeting, setGreeting] = useState("");
   const [todayLabel, setTodayLabel] = useState("");
   const [focus, setFocus] = useState("");
   const [wins, setWins] = useState("");
@@ -56,9 +57,13 @@ export function DashboardPanel({
 
   useEffect(() => {
     // Hydrate date-scoped fields from localStorage — only available client-side.
-    const todayKey = format(new Date(), "yyyy-MM-dd");
+    const now = new Date();
+    const todayKey = format(now, "yyyy-MM-dd");
+    const name = fos.get<string>("founderName", "").trim();
+    const part = now.getHours() < 12 ? "Good morning" : now.getHours() < 18 ? "Good afternoon" : "Good evening";
     // eslint-disable-next-line react-hooks/set-state-in-effect
-    setTodayLabel(format(new Date(), "EEEE, MMMM d"));
+    setGreeting(name ? `${part}, ${name}` : part);
+    setTodayLabel(format(now, "EEEE, MMMM d"));
     setFocus(fos.get<string>(`focus_${todayKey}`, ""));
     setWins(fos.get<string>(`wins_${todayKey}`, ""));
     setContentPieceCount(fos.get<unknown[]>("contentPieces", []).length);
@@ -93,13 +98,13 @@ export function DashboardPanel({
         }}
       >
         <p className="text-[11px] uppercase tracking-wider num" style={{ color: "var(--accent)" }}>
-          Today
+          {todayLabel || "Today"}
         </p>
         <h2
           className="mt-2 text-[26px]"
           style={{ fontFamily: "var(--font-display)", fontWeight: 800, color: "var(--text)" }}
         >
-          {todayLabel || " "}
+          {greeting || " "}
         </h2>
 
         <label

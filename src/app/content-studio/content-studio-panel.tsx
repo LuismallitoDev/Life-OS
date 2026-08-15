@@ -47,7 +47,7 @@ function fieldStyle(): React.CSSProperties {
   };
 }
 
-export function ContentStudioPanel({ onOpenSettings }: { onOpenSettings: () => void }) {
+export function ContentStudioPanel() {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [pieces, setPieces] = useState<ContentPiece[]>([]);
@@ -118,15 +118,8 @@ export function ContentStudioPanel({ onOpenSettings }: { onOpenSettings: () => v
     <div className="space-y-6">
       {!apiKey && (
         <SetupNotice>
-          Add your API key in{" "}
-          <button
-            onClick={onOpenSettings}
-            className="underline underline-offset-2"
-            style={{ color: "inherit" }}
-          >
-            Settings
-          </button>{" "}
-          to draft content.
+          Content drafting isn&apos;t connected yet — it&apos;s being switched
+          over to a new backend. Check back soon.
         </SetupNotice>
       )}
       {error && <SetupNotice>{error}</SetupNotice>}

@@ -35,4 +35,19 @@ export const fos = {
     }
     toRemove.forEach((key) => window.localStorage.removeItem(key));
   },
+  /** Returns every key this app has set (prefix stripped, values parsed). */
+  exportAll(): Record<string, unknown> {
+    if (typeof window === "undefined") return {};
+    const out: Record<string, unknown> = {};
+    for (let i = 0; i < window.localStorage.length; i++) {
+      const key = window.localStorage.key(i);
+      if (!key?.startsWith("fos_")) continue;
+      try {
+        out[key.slice(4)] = JSON.parse(window.localStorage.getItem(key) ?? "null");
+      } catch {
+        // skip anything that doesn't parse as JSON
+      }
+    }
+    return out;
+  },
 };

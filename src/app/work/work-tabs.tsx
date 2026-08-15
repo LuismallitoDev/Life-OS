@@ -1,21 +1,12 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import {
-  LayoutDashboard,
-  FolderKanban,
-  Sparkles,
-  PenTool,
-  Wrench,
-  Settings,
-} from "lucide-react";
+import { LayoutDashboard, FolderKanban, Sparkles } from "lucide-react";
 import { Card, Badge } from "@/components/ui";
 import { SetupNotice } from "@/components/setup-notice";
 import { fos } from "@/lib/fos";
 import { DashboardPanel } from "./dashboard-panel";
 import { AiCoachPanel } from "./ai-coach-panel";
-import { ContentStudioPanel } from "./content-studio-panel";
-import { SettingsPanel } from "./settings-panel";
 import type { Project, NotionClientRecord } from "@/lib/notion";
 import type { CalendarEvent } from "@/lib/calendar";
 
@@ -23,9 +14,6 @@ const SUB_TABS = [
   { id: "dashboard", label: "Dashboard", icon: LayoutDashboard },
   { id: "projects", label: "Projects", icon: FolderKanban },
   { id: "ai-coach", label: "AI Coach", icon: Sparkles },
-  { id: "content-studio", label: "Content Studio", icon: PenTool },
-  { id: "tools", label: "Tools", icon: Wrench },
-  { id: "settings", label: "Settings", icon: Settings },
 ] as const;
 
 type SubTabId = (typeof SUB_TABS)[number]["id"];
@@ -235,19 +223,7 @@ export function WorkTabs({
         </div>
       )}
 
-      {active === "ai-coach" && <AiCoachPanel onOpenSettings={() => navigate("settings")} />}
-
-      {active === "content-studio" && (
-        <ContentStudioPanel onOpenSettings={() => navigate("settings")} />
-      )}
-
-      {active === "tools" && (
-        <div>
-          <h1 style={{ color: "var(--text)" }}>Tools</h1>
-        </div>
-      )}
-
-      {active === "settings" && <SettingsPanel />}
+      {active === "ai-coach" && <AiCoachPanel />}
     </div>
   );
 }

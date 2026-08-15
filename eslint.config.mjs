@@ -12,6 +12,8 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Sibling Remotion project — its own lint/tsconfig, not part of this app.
+    "remotion-studio/**",
   ]),
 ]);
 

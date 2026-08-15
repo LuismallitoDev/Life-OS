@@ -31,7 +31,7 @@ function titleFrom(message: string) {
   return trimmed.length > 42 ? `${trimmed.slice(0, 42)}…` : trimmed;
 }
 
-export function AiCoachPanel({ onOpenSettings }: { onOpenSettings: () => void }) {
+export function AiCoachPanel() {
   const [apiKey, setApiKey] = useState<string | null>(null);
   const [hydrated, setHydrated] = useState(false);
   const [sessions, setSessions] = useState<CoachSession[]>([]);
@@ -174,15 +174,8 @@ export function AiCoachPanel({ onOpenSettings }: { onOpenSettings: () => void })
     <div className="space-y-6">
       {!apiKey && (
         <SetupNotice>
-          Add your API key in{" "}
-          <button
-            onClick={onOpenSettings}
-            className="underline underline-offset-2"
-            style={{ color: "inherit" }}
-          >
-            Settings
-          </button>
-          .
+          AI Coach isn&apos;t connected yet — it&apos;s being switched over to a
+          new backend. Check back soon.
         </SetupNotice>
       )}
       {error && <SetupNotice>{error}</SetupNotice>}
@@ -305,7 +298,7 @@ export function AiCoachPanel({ onOpenSettings }: { onOpenSettings: () => void })
               value={question}
               onChange={(e) => setQuestion(e.target.value)}
               onKeyDown={handleKeyDown}
-              placeholder={apiKey ? "What's on your mind?" : "Add an API key in Settings to ask the coach"}
+              placeholder={apiKey ? "What's on your mind?" : "AI Coach is being reconnected — check back soon"}
               disabled={!apiKey || isAsking}
               rows={2}
               className="flex-1 resize-none rounded-lg px-3.5 py-2.5 text-[14px] outline-none disabled:opacity-50"
