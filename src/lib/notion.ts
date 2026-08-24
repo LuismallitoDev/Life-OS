@@ -8,8 +8,8 @@ import type {
 // Tracker / Weekly Workout & Meals). See the Life OS setup guide for how these
 // map to the visible databases in Notion.
 export const DATA_SOURCES = {
-  projects: "d7ea35b1-e3ca-83cd-b286-07f6a626a243",
-  clients: "5e9a35b1-e3ca-8313-bd48-07a3994fe51f",
+  projects: "939a35b1-e3ca-8324-9700-8774bfa75d1b",
+  clients: "740a35b1-e3ca-8327-bda1-0782b984f794",
   mealTracking: "3bba35b1-e3ca-8038-9629-000bcb647ec3",
   exercises: "2b5a35b1-e3ca-801a-bd91-000b26a95b75",
   expenses: "ee2a35b1-e3ca-8222-8224-0744b102336e",
